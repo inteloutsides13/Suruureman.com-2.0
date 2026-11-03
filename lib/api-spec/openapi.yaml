@@ -1,0 +1,644 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: Surrur-e-Mann Poetry Website API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: poems
+    description: Poetry operations
+  - name: categories
+    description: Category operations
+  - name: poets
+    description: Poet operations
+  - name: videos
+    description: Video operations
+  - name: irab
+    description: Urdu e'raab operations
+  - name: admin
+    description: Protected administration operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /poems:
+    get:
+      operationId: listPoems
+      tags: [poems]
+      summary: List all poems
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: featured
+          in: query
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          schema:
+            type: number
+        - name: offset
+          in: query
+          schema:
+            type: number
+        - name: poetName
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [latest, popular, likes, views]
+        - name: language
+          in: query
+          schema:
+            type: string
+            enum: [urdu, punjabi, arabic, persian, farsi, hindi, siraiki, english, spanish, punjabi-shahmukhi]
+      responses:
+        "200":
+          description: List of poems
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  poems:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Poem"
+                  total:
+                    type: number
+                required:
+                  - poems
+                  - total
+    post:
+      operationId: createPoem
+      tags: [poems]
+      summary: Create a poem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePoem"
+      responses:
+        "201":
+          description: Created poem
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Poem"
+  /poems/daily:
+    get:
+      operationId: getDailyPoem
+      tags: [poems]
+      summary: Get the shared daily Urdu poem selection
+      description: Returns the same published Urdu poem for all visitors during each UTC day, with its first four valid verse lines.
+      responses:
+        "200":
+          description: Daily published Urdu poem, or an empty result when none qualify
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailyPoemResponse"
+  /poems/{id}:
+    get:
+      operationId: getPoem
+      tags: [poems]
+      summary: Get a single poem
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Poem details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Poem"
+        "404":
+          description: Poem not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /categories:
+    get:
+      operationId: listCategories
+      tags: [categories]
+      summary: List all categories
+      responses:
+        "200":
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  categories:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Category"
+                required:
+                  - categories
+  /poets:
+    get:
+      operationId: listPoets
+      tags: [poets]
+      summary: List all poets
+      responses:
+        "200":
+          description: List of poets
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  poets:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Poet"
+                required:
+                  - poets
+  /poets/{id}:
+    get:
+      operationId: getPoet
+      tags: [poets]
+      summary: Get a single poet
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Poet details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Poet"
+        "404":
+          description: Poet not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /videos:
+    get:
+      operationId: listVideos
+      tags: [videos]
+      summary: List all videos
+      responses:
+        "200":
+          description: List of videos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  videos:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Video"
+                required:
+                  - videos
+  /admin/poems:
+    get:
+      operationId: listAdminPoems
+      tags: [admin]
+      summary: List poems with contributor attribution
+      description: Returns poems and contributor display names to authenticated Admin and Developer users only. Contributor emails are not returned.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: number
+            minimum: 1
+            maximum: 2000
+        - name: offset
+          in: query
+          schema:
+            type: number
+            minimum: 0
+        - name: search
+          in: query
+          description: Case-insensitive partial search across English and Urdu titles, poem content, English and Urdu poet names, and contributor display names.
+          schema:
+            type: string
+            maxLength: 200
+        - name: language
+          in: query
+          schema:
+            type: string
+            enum: [urdu, punjabi, arabic, persian, farsi, hindi, siraiki, english, spanish, punjabi-shahmukhi]
+      responses:
+        "200":
+          description: Poems and contributor display names
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminPoemsResponse"
+        "401":
+          description: Authentication required or session is no longer valid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Admin or Developer role required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /irab/text:
+    post:
+      operationId: createIrabText
+      tags: [irab]
+      summary: Add Urdu e'raab to text
+      description: Add server-generated Urdu and Arabic diacritics without changing the submitted text or line structure. Requires an authenticated Developer, Admin, or Contributor session.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IrabTextBody"
+      responses:
+        "200":
+          description: Diacritized text
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IrabTextSuccessResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IrabTextErrorResponse"
+        "413":
+          description: Text too large
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IrabTextErrorResponse"
+        "429":
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IrabTextErrorResponse"
+        "502":
+          description: Provider unavailable or invalid provider output
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IrabTextErrorResponse"
+        "503":
+          description: Provider configuration unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IrabTextErrorResponse"
+        "504":
+          description: Provider timeout
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IrabTextErrorResponse"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+    Poem:
+      type: object
+      properties:
+        id:
+          type: number
+        title:
+          type: string
+        titleUrdu:
+          type: string
+        content:
+          type: string
+        poetName:
+          type: string
+        poetNameUrdu:
+          type: string
+        category:
+          type: string
+        categoryUrdu:
+          type: string
+        featured:
+          type: boolean
+        imageUrl:
+          type: string
+          nullable: true
+        likes:
+          type: number
+        views:
+          type: number
+        language:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - title
+        - titleUrdu
+        - content
+        - poetName
+        - poetNameUrdu
+        - category
+        - categoryUrdu
+        - featured
+        - likes
+        - views
+        - language
+        - createdAt
+    DailyPoemResponse:
+      type: object
+      properties:
+        day:
+          type: string
+          format: date
+        poem:
+          oneOf:
+            - $ref: "#/components/schemas/DailyPoem"
+            - type: "null"
+      required: [day, poem]
+    DailyPoem:
+      type: object
+      properties:
+        id:
+          type: number
+        titleUrdu:
+          type: string
+        poetNameUrdu:
+          type: string
+        lines:
+          type: array
+          minItems: 4
+          maxItems: 4
+          items:
+            type: string
+      required: [id, titleUrdu, poetNameUrdu, lines]
+    AdminPoem:
+      type: object
+      properties:
+        id:
+          type: number
+        title:
+          type: string
+        titleUrdu:
+          type: string
+        content:
+          type: string
+        poetName:
+          type: string
+        poetNameUrdu:
+          type: string
+        category:
+          type: string
+        categoryUrdu:
+          type: string
+        featured:
+          type: boolean
+        imageUrl:
+          type: ["string", "null"]
+        likes:
+          type: number
+        views:
+          type: number
+        shares:
+          type: number
+        visualPoetry:
+          type: boolean
+        language:
+          type: string
+        status:
+          type: string
+          enum: [published, pending, rejected, draft]
+        createdByUserId:
+          type: ["number", "null"]
+        contributorName:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - title
+        - titleUrdu
+        - content
+        - poetName
+        - poetNameUrdu
+        - category
+        - categoryUrdu
+        - featured
+        - imageUrl
+        - likes
+        - views
+        - shares
+        - visualPoetry
+        - language
+        - status
+        - createdByUserId
+        - contributorName
+        - createdAt
+    AdminPoemsResponse:
+      type: object
+      properties:
+        poems:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminPoem"
+        total:
+          type: number
+      required:
+        - poems
+        - total
+    CreatePoem:
+      type: object
+      properties:
+        title:
+          type: string
+        titleUrdu:
+          type: string
+        content:
+          type: string
+        poetName:
+          type: string
+        poetNameUrdu:
+          type: string
+        category:
+          type: string
+        categoryUrdu:
+          type: string
+        featured:
+          type: boolean
+        imageUrl:
+          type: string
+          nullable: true
+        language:
+          type: string
+          enum: [urdu, punjabi, arabic, persian, farsi, hindi, siraiki, english, spanish, punjabi-shahmukhi]
+      required:
+        - title
+        - titleUrdu
+        - content
+        - poetName
+        - poetNameUrdu
+        - category
+        - categoryUrdu
+        - featured
+    Category:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        nameUrdu:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        poemCount:
+          type: number
+      required:
+        - id
+        - name
+        - nameUrdu
+        - slug
+        - description
+        - poemCount
+    Poet:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        nameUrdu:
+          type: string
+        bio:
+          type: string
+        bioUrdu:
+          type: string
+        era:
+          type: string
+        poemCount:
+          type: number
+      required:
+        - id
+        - name
+        - nameUrdu
+        - bio
+        - bioUrdu
+        - era
+        - poemCount
+    Video:
+      type: object
+      properties:
+        id:
+          type: number
+        title:
+          type: string
+        titleUrdu:
+          type: string
+        description:
+          type: string
+        youtubeId:
+          type: string
+        thumbnailUrl:
+          type: string
+          nullable: true
+        duration:
+          type: string
+      required:
+        - id
+        - title
+        - titleUrdu
+        - description
+        - youtubeId
+        - duration
+    IrabTextBody:
+      type: object
+      additionalProperties: false
+      properties:
+        text:
+          type: string
+          minLength: 1
+          maxLength: 20000
+      required:
+        - text
+    IrabTextSuccessResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        success:
+          type: boolean
+          const: true
+        text:
+          type: string
+      required:
+        - success
+        - text
+    IrabTextErrorResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        success:
+          type: boolean
+          const: false
+        error:
+          type: string
+      required:
+        - success
+        - error

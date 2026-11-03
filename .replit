@@ -1,0 +1,40 @@
+modules = ["nodejs-24", "python-base-3.13"]
+
+[deployment]
+router = "application"
+deploymentTarget = "autoscale"
+
+[deployment.postBuild]
+args = ["pnpm", "store", "prune"]
+env = { "CI" = "true" }
+
+[workflows]
+runButton = "Project"
+
+[agent]
+stack = "PNPM_WORKSPACE"
+expertMode = true
+
+[postMerge]
+path = "scripts/post-merge.sh"
+timeoutMs = 20000
+
+[nix]
+channel = "stable-25_05"
+
+[userenv]
+
+[userenv.shared]
+MIGRATION_DATABASE_STRATEGY = "reuse-original"
+SMTP_HOST = "smtp.hostinger.com"
+SMTP_PORT = "465"
+SMTP_SECURE = "true"
+MAIL_FROM = "info@suruureman.com"
+MAIL_FROM_NAME = "Suruur E Man"
+
+[userenv.development]
+MIGRATION_DATABASE_READ_ONLY = "false"
+
+[userenv.production]
+PUBLIC_APP_URL = "https://suruureman.com"
+MIGRATION_DATABASE_READ_ONLY = "false"

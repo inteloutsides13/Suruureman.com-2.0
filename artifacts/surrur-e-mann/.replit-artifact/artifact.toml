@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Suruur E Man"
+description = "Exact restored Suruur E Man / Radio Suruur FM application from the verified archived main source. Preserve existing design and authentication. Production database migration is blocked pending safe verification; no redesign or new database seeding."
+version = "1.0.0"
+id = "artifacts/surrur-e-mann"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24783
+
+[services.development]
+run = "pnpm --filter @workspace/surrur-e-mann run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/surrur-e-mann", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/surrur-e-mann/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24783"
+BASE_PATH = "/"

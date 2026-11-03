@@ -1,0 +1,20 @@
+packages:
+  "framer-motion": "For elegant page transitions, hover lifts, and staggered reveals matching the premium aesthetic"
+  "clsx": "Utility for constructing className strings conditionally"
+  "tailwind-merge": "Utility for merging tailwind classes safely"
+
+images:
+  - path: "artifacts/surrur-e-mann/public/images/visual-poetry-1.png"
+    description: "Dark atmospheric cinematic background, classical islamic architecture arches in deep crimson and near-black, subtle glowing gold moonlight, minimal, elegant"
+    aspect_ratio: "16:9"
+  - path: "artifacts/surrur-e-mann/public/images/visual-poetry-2.png"
+    description: "Abstract deep crimson velvet texture with soft gold dust falling, macro photography, extremely dark and moody, luxurious background"
+    aspect_ratio: "16:9"
+  - path: "artifacts/surrur-e-mann/public/images/ornament-divider.png"
+    description: "A very minimal, elegant classical Arabic or Persian style decorative line divider in glowing gold on a purely transparent background"
+    aspect_ratio: "16:9"
+
+notes:
+  - Utilizing the pre-generated TanStack Query hooks from @workspace/api-client-react
+  - Incorporating Noto Nastaliq Urdu for RTL Arabic script formatting with high line-heights
+  - The UI uses a strictly dark-mode luxury theme based on the crimson/gold logo

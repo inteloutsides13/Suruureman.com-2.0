@@ -1,0 +1,40 @@
+import { Router, type IRouter } from "express";
+import healthRouter from "./health.js";
+import poemsRouter from "./poems.js";
+import categoriesRouter from "./categories.js";
+import poetsRouter from "./poets.js";
+import seoRouter from "./seo.js";
+import videosRouter from "./videos.js";
+import adminRouter from "./admin.js";
+import contactRouter from "./contact.js";
+import toolsRouter from "./tools.js";
+import contributorPortalRouter from "./contributor-portal.js";
+import radioRouter from "./radio.js";
+import radioProgrammesRouter from "./radio-programmes.js";
+import radioPublicRouter from "./radio-public.js";
+import radioInternalRouter from "./radio-internal.js";
+import radioCalendarRouter from "./radio-calendar.js";
+import contributorApplicationsRouter from "./contributor-applications.js";
+import irabRouter from "./irab.js";
+
+const router: IRouter = Router();
+
+router.use(healthRouter);
+router.use("/seo", seoRouter);
+router.use("/poems", poemsRouter);
+router.use("/categories", categoriesRouter);
+router.use("/poets", poetsRouter);
+router.use("/videos", videosRouter);
+router.use("/admin", adminRouter);
+router.use("/contact", contactRouter);
+router.use("/tools", toolsRouter);
+router.use("/contributor", contributorPortalRouter);
+router.use(contributorApplicationsRouter);
+router.use(irabRouter);
+router.use("/admin/radio", radioRouter);
+router.use("/admin/radio", radioProgrammesRouter);
+router.use("/radio", radioPublicRouter);
+router.use("/internal/radio", radioInternalRouter);
+router.use(radioCalendarRouter);
+
+export default router;

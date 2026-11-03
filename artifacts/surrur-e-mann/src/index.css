@@ -1,0 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Noto+Nastaliq+Urdu:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+@import "tailwindcss";
+
+@theme inline {
+   --font-sans: 'DM Sans', sans-serif;
+  --font-heading: 'Playfair Display', serif;
+  --font-urdu: 'Noto Nastaliq Urdu', serif;
+
+  /* Luxury Dark Palette extracted from Surrur-e-Mann Logo */
+  --color-background: hsl(340 25% 4%);
+  --color-foreground: hsl(37 33% 94%); /* Ivory */
+  
+  --color-card: hsl(349 40% 6%);
+  --color-card-foreground: hsl(37 33% 94%);
+  
+  --color-popover: hsl(349 40% 6%);
+  --color-popover-foreground: hsl(37 33% 94%);
+  
+  --color-primary: hsl(352 73% 36%); /* Deep Crimson */
+  --color-primary-foreground: hsl(37 33% 94%);
+  
+  --color-secondary: hsl(349 20% 12%); /* Lighter Charcoal/Crimson */
+  --color-secondary-foreground: hsl(46 65% 52%); /* Gold */
+  
+  --color-muted: hsl(349 20% 12%);
+  --color-muted-foreground: hsl(37 15% 65%);
+  
+  --color-accent: hsl(46 65% 52%); /* Rich Gold */
+  --color-accent-foreground: hsl(340 25% 4%);
+  
+  --color-destructive: hsl(0 84% 60%);
+  --color-destructive-foreground: hsl(0 0% 100%);
+  
+  --color-border: hsl(46 65% 52% / 0.2); /* Transparent Gold */
+  --color-input: hsl(349 20% 12%);
+  --color-ring: hsl(46 65% 52%);
+
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+
+  /* Radio surface accents: oxidized brass, signal crimson, warm paper */
+  --radio-brass: hsl(39 58% 59%);
+  --radio-ember: hsl(7 64% 48%);
+  --radio-ink: hsl(339 28% 7%);
+}
+
+:root {
+  --background: 340 25% 4%;
+  --foreground: 37 33% 94%;
+  --card: 349 40% 6%;
+  --card-foreground: 37 33% 94%;
+  --popover: 349 40% 6%;
+  --popover-foreground: 37 33% 94%;
+  --primary: 352 73% 36%;
+  --primary-foreground: 37 33% 94%;
+  --secondary: 349 20% 12%;
+  --secondary-foreground: 46 65% 52%;
+  --muted: 349 20% 12%;
+  --muted-foreground: 37 15% 65%;
+  --accent: 46 65% 52%;
+  --accent-foreground: 340 25% 4%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 46 65% 52% / 0.2;
+  --input: 349 20% 12%;
+  --ring: 46 65% 52%;
+  --radio-brass: 39 58% 59%;
+  --radio-ember: 7 64% 48%;
+  --radio-ink: 339 28% 7%;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-accent/30 selection:text-accent font-sans;
+    background-image: radial-gradient(circle at 50% 0%, hsl(352 73% 36% / 0.05) 0%, transparent 70%);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading tracking-tight;
+  }
+}
+
+@layer utilities {
+  .text-glow-gold {
+    text-shadow: 0 0 20px hsl(46 65% 52% / 0.3);
+  }
+  
+  .text-glow-crimson {
+    text-shadow: 0 0 20px hsl(352 73% 36% / 0.5);
+  }
+
+  .glass-card {
+    @apply bg-card/60 backdrop-blur-xl border border-accent/20 shadow-[0_8px_30px_rgb(0,0,0,0.5)];
+  }
+
+  .urdu-text {
+    @apply font-urdu text-right leading-[2.5] tracking-normal;
+    direction: rtl;
+  }
+
+  .radio-grid {
+    background-image:
+      linear-gradient(hsl(var(--accent) / 0.055) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--accent) / 0.055) 1px, transparent 1px);
+    background-size: 34px 34px;
+    mask-image: linear-gradient(to bottom, black, transparent 82%);
+  }
+
+  .radio-scanline {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 5px,
+      hsl(var(--accent) / 0.035) 6px,
+      transparent 7px
+    );
+  }
+}
+
+@keyframes radio-pulse {
+  0%, 100% { transform: scaleY(.35); opacity: .38; }
+  50% { transform: scaleY(1); opacity: .9; }
+}
+
+@keyframes radio-orbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.radio-wave-bar {
+  transform-origin: center;
+  animation: radio-pulse 1.8s ease-in-out infinite;
+}
+
+.radio-orbit {
+  animation: radio-orbit 26s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .radio-wave-bar,
+  .radio-orbit {
+    animation: none;
+  }
+}
+
+/* Custom Scrollbar for a premium feel */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(340 25% 4%);
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(349 20% 12%);
+  border-radius: 4px;
+  border: 1px solid hsl(340 25% 4%);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(46 65% 52% / 0.5);
+}

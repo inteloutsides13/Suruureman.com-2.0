@@ -1,0 +1,42 @@
+modules = ["nodejs-24", "python-base-3.13", "postgresql-16"]
+
+[[artifacts]]
+id = "artifacts/api-server"
+
+[[artifacts]]
+id = "artifacts/mockup-sandbox"
+
+[deployment]
+router = "application"
+deploymentTarget = "autoscale"
+
+[deployment.postBuild]
+args = ["pnpm", "store", "prune"]
+env = { "CI" = "true" }
+
+[workflows]
+runButton = "Project"
+
+[agent]
+stack = "PNPM_WORKSPACE"
+expertMode = true
+
+[postMerge]
+path = "scripts/post-merge.sh"
+timeoutMs = 20000
+
+[userenv]
+
+[userenv.production]
+VITE_API_URL = "https://suruureman.com"
+
+[userenv.shared]
+MAIL_FROM = "info@suruureman.com"
+MAIL_FROM_NAME = "Suruur E Man"
+SMTP_USER = "info@suruureman.com"
+SMTP_HOST = "smtp.hostinger.com"
+SMTP_PORT = "465"
+SMTP_SECURE = "true"
+
+[nix]
+channel = "stable-25_05"

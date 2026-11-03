@@ -1,0 +1,50 @@
+{
+  "name": "@workspace/api-server",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "export NODE_ENV=development && pnpm run build && pnpm run start",
+    "build": "node ./build.mjs",
+    "start": "node --enable-source-maps ./dist/index.mjs",
+    "dev:migration": "export NODE_ENV=development && pnpm run build && pnpm run start:migration",
+    "start:migration": "node --enable-source-maps ./dist/migration.mjs",
+    "test": "node --import tsx --test src/lib/dailyPoem.test.ts src/lib/irabOutputGuard.test.ts src/lib/irabRetry.test.ts src/lib/poemValidation.test.ts src/lib/poemDuplicatePrevention.test.ts src/routes/poemDuplicateRoutes.test.ts src/routes/seoRoutes.test.ts src/lib/adminPoemSearch.test.ts src/middlewares/irabAccess.test.ts src/lib/migration-preview.test.ts src/lib/adminTokenPolicy.test.ts src/lib/poemVisibility.test.ts src/lib/backup-snapshots.test.ts src/lib/radioSchedule.test.ts src/lib/radioCalendar.test.ts src/lib/radioCalendarImport.test.ts ../../lib/db/src/connection.test.ts ../../lib/db/src/radioScheduleTestTarget.test.ts ../../lib/db/src/radioScheduleBaselineSetupCore.test.ts ../../lib/db/src/radioScheduleReplitDevelopmentTarget.test.ts",
+    "test:radio-schedule:db": "node --import tsx ../../lib/db/src/radioScheduleTestRunner.ts",
+    "radio-schedule:test-db:setup": "node --import tsx ../../lib/db/src/radioScheduleBaselineSetup.ts",
+    "test:radio-schedule:integration": "node --import tsx --test ../../lib/db/src/radioScheduleApi.integration.test.ts",
+    "radio-schedule:verify:replit-development": "node --import tsx ../../lib/db/src/radioScheduleReplitDevelopmentRunner.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@google/genai": "2.12.0",
+    "@types/nodemailer": "^8.0.2",
+    "@workspace/api-zod": "workspace:*",
+    "@workspace/db": "workspace:*",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2",
+    "drizzle-orm": "catalog:",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "nodemailer": "^10.0.10",
+    "pg": "^8.20.0",
+    "pino": "^9",
+    "pino-http": "^10",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^3.0.0",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "catalog:",
+    "@types/pg": "^8.18.0",
+    "esbuild": "^0.28.1",
+    "esbuild-plugin-pino": "^2.3.3",
+    "pino-pretty": "^13.2.0",
+    "thread-stream": "3.1.0",
+    "tsx": "catalog:"
+  }
+}
